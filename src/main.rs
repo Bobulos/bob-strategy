@@ -4,7 +4,7 @@ use bob_engine::runtime::ecs::{SystemGroup, system_group};
 use bob_engine::*;
 
 pub mod systems;
-pub use systems;
+
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("bob_engine running...");
@@ -24,9 +24,10 @@ fn bootstrap_gameplay_systems(engine: &mut Engine) {
     let group = engine.entities.add_system_group(
         GAMEPLAY_LOGIC,
         SystemGroup::new(&world, system_group::SystemGroupThreading::Main
-    )).unwrap();
+    ));
     
-    //let group = engine.entities.get_system_group_mut(GAMEPLAY_LOGIC).unwrap();
+    let group = engine.entities.get_system_group_mut(GAMEPLAY_LOGIC).unwrap();
+    group.register_system(Box::new(systems::spawner::Spawner::new()), 0);
     
 }
 fn build_asset_store() -> AssetStore {
